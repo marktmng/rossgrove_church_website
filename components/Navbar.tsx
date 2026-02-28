@@ -26,13 +26,13 @@ export default function Navbar() {
         <div className="hidden md:block">
           <div
             className={`flex items-center rounded-md overflow-hidden transition-[width] duration-500 ease-out ${
-              open ? "w-[420px]" : "w-[100px]"
+              open ? "w-[500px]" : "w-[100px]"
             }`}
           >
             {!open && (
               <button
                 onClick={() => setOpen(true)}
-                className="w-full px-4 py-2 font-medium text-white"
+                className="w-full px-4 py-2 font-medium text-white hover:text-[#82CEC7] transition-colors duration-300"
               >
                 Menu
               </button>
@@ -68,7 +68,7 @@ export default function Navbar() {
         <div className="relative md:hidden">
           <button
             onClick={() => setOpen(!open)}
-            className="px-4 py-2 font-medium text-white rounded-md"
+            className="px-4 py-2 font-medium text-white hover:text-[#82CEC7] transition-colors duration-300"
           >
             Menu
           </button>
