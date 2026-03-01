@@ -67,11 +67,11 @@ export default function HomePage() {
       </section>
 
       {/* 360 VIEW SECTION */}
-      <section className="py-24 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section >
+        {/* <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center"> */}
 
           {/* LEFT TEXT */}
-          <div>
+          {/* <div>
             <h2 className="text-3xl md:text-4xl font-semibold mb-6">
               Take a Virtual Tour
             </h2>
@@ -85,10 +85,10 @@ export default function HomePage() {
             >
               Start Virtual Tour
             </button>
-          </div>
+          </div> */}
 
           {/* RIGHT PREVIEW */}
-          <div
+          {/* <div
             className="relative cursor-pointer group"
             onClick={() => setOpen(true)}
           >
@@ -102,9 +102,9 @@ export default function HomePage() {
                 360° View
               </div>
             </div>
-          </div>
+          </div> */}
 
-        </div>
+        {/* </div> */}
       </section>
 
       {/* LOCATION */}
@@ -139,7 +139,7 @@ export default function HomePage() {
       </section>
 
       {/* MODAL 360 VIEWER */}
-      {open && (
+      {/* {open && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
           <div className="relative w-[95%] md:w-[80%] h-[80vh] bg-black rounded-lg overflow-hidden">
 
@@ -154,7 +154,7 @@ export default function HomePage() {
 
           </div>
         </div>
-      )}
+      )} */}
 
     </div>
   );

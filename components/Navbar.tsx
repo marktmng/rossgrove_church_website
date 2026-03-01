@@ -40,17 +40,20 @@ export default function Navbar() {
 
             {open && (
               <div className="flex items-center justify-between w-full px-4 py-2 font-medium space-x-6 text-white">
-                <Link href="/about" onClick={() => setOpen(false)}>
+                <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/about" onClick={() => setOpen(false)}>
                   About
                 </Link>
-                <Link href="/services" onClick={() => setOpen(false)}>
+                <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/services" onClick={() => setOpen(false)}>
                   Services
                 </Link>
-                <Link href="/sermons" onClick={() => setOpen(false)}>
+                <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/sermons" onClick={() => setOpen(false)}>
                   Sermons
                 </Link>
-                <Link href="/contact" onClick={() => setOpen(false)}>
+                <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/contact" onClick={() => setOpen(false)}>
                   Contact
+                </Link>
+                <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/calendar" onClick={() => setOpen(false)}>
+                  Calendar
                 </Link>
 
                 <button
@@ -81,17 +84,20 @@ export default function Navbar() {
             }`}
           >
             <div className="flex flex-col p-4 space-y-6 font-medium">
-              <Link href="/about" onClick={() => setOpen(false)}>
+              <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/about" onClick={() => setOpen(false)}>
                 About
               </Link>
-              <Link href="/services" onClick={() => setOpen(false)}>
+              <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/services" onClick={() => setOpen(false)}>
                 Services
               </Link>
-              <Link href="/sermons" onClick={() => setOpen(false)}>
+              <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/sermons" onClick={() => setOpen(false)}>
                 Sermons
               </Link>
-              <Link href="/contact" onClick={() => setOpen(false)}>
+              <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/contact" onClick={() => setOpen(false)}>
                 Contact
+              </Link>
+              <Link className="hover:text-[#82CEC7] transition-colors duration-300" href="/calendar" onClick={() => setOpen(false)}>
+                Calendar
               </Link>
             </div>
           </div>
