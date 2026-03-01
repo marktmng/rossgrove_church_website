@@ -1,0 +1,80 @@
+
+/* ===== Church Calendar Theme ===== */
+
+.church-calendar .fc {
+  font-family: inherit;
+}
+
+/* Header Title */
+.church-calendar .fc-toolbar-title {
+  color: #2f3e46;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+/* Day numbers */
+.church-calendar .fc-daygrid-day-number {
+  color: #2f3e46;
+  font-weight: 500;
+}
+
+/* Events */
+.church-calendar .fc-event {
+  background-color: #82CEC7 !important;
+  border: none !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 4px 6px !important;
+  font-size: 0.85rem;
+}
+
+/* Hover */
+.church-calendar .fc-event:hover {
+  opacity: 0.85;
+}
+
+/* Today highlight */
+.church-calendar .fc-day-today {
+  background-color: rgba(130, 206, 199, 0.15) !important;
+}
+
+/* Softer borders */
+.church-calendar .fc-theme-standard td,
+.church-calendar .fc-theme-standard th {
+  border-color: #f2f2f2;
+}
+
+/* Buttons */
+.church-calendar .fc-button {
+  background-color: #82CEC7 !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+.church-calendar .fc-button:hover {
+  background-color: #6fbab3 !important;
+}
+
+
+/* ===== Darker Day Numbers ===== */
+
+.church-calendar .fc-daygrid-day-number {
+  color: #1f2937 !important; /* dark gray (Tailwind gray-800) */
+  font-weight: 600;
+}
+
+/* Make weekday headers darker */
+.church-calendar .fc-col-header-cell-cushion {
+  color: #111827 !important; /* almost black */
+  font-weight: 600;
+}
+
+/* Make other-month days less faded */
+.church-calendar .fc-day-other .fc-daygrid-day-number {
+  color: #4b5563 !important; /* gray-600 instead of very light */
+}
+
+/* Optional: darken list view text on mobile */
+.church-calendar .fc-list-event-title {
+  color: #1f2937 !important;
+}
