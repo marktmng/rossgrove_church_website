@@ -1,31 +1,61 @@
 "use client";
 
-import { Viewer } from "@photo-sphere-viewer/core";
-import "@photo-sphere-viewer/core/index.css";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
+type Event = {
+  id: string;
+  title: string;
+  description: string | null;
+  date: string;
+  image: string | null;
+};
 
 export default function HomePage() {
-  const [open, setOpen] = useState(false);
-  const viewerRef = useRef(null);
-  const containerRef = useRef(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
+  // Fetch events
   useEffect(() => {
-    if (open && containerRef.current) {
-      viewerRef.current = new Viewer({
-        container: containerRef.current,
-        panorama: "/assets/loan-360.jpg", // ✅ fixed here
-        navbar: ["zoom", "fullscreen"],
-      });
+    async function fetchEvents() {
+      const res = await fetch("/api/events");
+      const data = await res.json();
+      setEvents(data);
     }
+    fetchEvents();
+  }, []);
 
-    return () => {
-      if (viewerRef.current) {
-        viewerRef.current.destroy();
-        viewerRef.current = null;
-      }
-    };
-  }, [open]);
+  function nextSlide() {
+    if (events.length === 0) return;
+    setCurrentIndex((prev) =>
+      prev === events.length - 1 ? 0 : prev + 1
+    );
+  }
+
+  function prevSlide() {
+    if (events.length === 0) return;
+    setCurrentIndex((prev) =>
+      prev === 0 ? events.length - 1 : prev - 1
+    );
+  }
+
+  function googleCalendarLink(event: Event) {
+    const start = new Date(event.date)
+      .toISOString()
+      .replace(/-|:|\.\d+/g, "");
+    const end = new Date(
+      new Date(event.date).getTime() + 2 * 60 * 60 * 1000
+    )
+      .toISOString()
+      .replace(/-|:|\.\d+/g, "");
+
+    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      event.title
+    )}&dates=${start}/${end}&details=${encodeURIComponent(
+      event.description || ""
+    )}`;
+  }
 
   return (
     <div className="flex flex-col">
@@ -35,7 +65,6 @@ export default function HomePage() {
         className="relative h-[85vh] flex items-center justify-center text-white bg-cover bg-center"
         style={{ backgroundImage: "url('/assets/banner.jpg')" }}
       >
-        <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black/80 to-transparent" />
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative max-w-3xl mx-auto text-center px-6 pt-24">
@@ -43,8 +72,7 @@ export default function HomePage() {
             Welcome to Rossgrove Bible Chapel
           </h1>
           <p className="text-lg md:text-xl text-neutral-200 mb-8">
-            A Bible-believing church in Mt Albert, Auckland,
-            growing together in faith and truth.
+            Growing together in faith and truth.
           </p>
           <Link
             href="/contact"
@@ -55,106 +83,155 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SERVICE INFO */}
-      <section className="py-20 px-6 bg-white text-center">
-        <h2 className="text-3xl font-semibold mb-6">
-          Join Us This Sunday
-        </h2>
-        <p className="text-lg mb-2">Sunday Worship – 10:00 AM</p>
-        <p className="text-neutral-600">
-          12 Rossgrove Terrace, Mt Albert, Auckland
-        </p>
-      </section>
+      {/* EVENTS SECTION */}
+      {events.length > 0 && (
+        <section className="py-24 bg-white bg-transparent">
+          <div className="max-w-2xl  mx-auto px-7 py-12">
 
-      {/* 360 VIEW SECTION */}
-      <section >
-        {/* <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center"> */}
-
-          {/* LEFT TEXT */}
-          {/* <div>
-            <h2 className="text-3xl md:text-4xl font-semibold mb-6">
-              Take a Virtual Tour
+            <h2 className="text-3xl font-semibold text-[#82CEC7] mb-12 text-center">
+              Upcoming Events
             </h2>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Explore Rossgrove Bible Chapel through an interactive 360° experience.
-              Click below to look around the space.
+
+            {events.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-gray-500 text-lg">
+              There are no upcoming events at the moment.
             </p>
-            <button
-              onClick={() => setOpen(true)}
-              className="bg-[#82CEC7] hover:bg-[#82CEC7]/80 px-6 py-3 rounded-md font-medium transition"
-            >
-              Start Virtual Tour
-            </button>
-          </div> */}
+            <p className="text-gray-400 text-sm mt-3">
+              Please check back soon or contact us for more information.
+            </p>
+          </div>
+        ) : (
+          <div className="relative overflow-hidden">
 
-          {/* RIGHT PREVIEW */}
-          {/* <div
-            className="relative cursor-pointer group"
-            onClick={() => setOpen(true)}
-          >
-            <img
-              src="/assets/loan-360.jpg" // ✅ same file as viewer
-              alt="360 Preview"
-              className="rounded-lg shadow-lg transition duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="bg-black/60 text-white px-6 py-3 rounded-full text-lg">
-                360° View
+              {/* SLIDE TRACK */}
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{
+                  transform: `translateX(-${currentIndex * 100}%)`,
+                }}
+              >
+                {events.map((event) => (
+                  <div
+                    key={event.id}
+                    className="min-w-full flex justify-center"
+                  >
+                    <div
+                      onClick={() => setSelectedEvent(event)}
+                      className="w-full max-w-md bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer group"
+                    >
+                      {event.image && (
+                        <div>
+                          <img
+                            src={event.image}
+                            alt={event.title}
+                            className="w-full h-60 object-cover group-hover:scale-105 transition duration-700"
+                          />
+                        </div>
+                      )}
+
+                      <div className="p-8 space-y-4">
+                        <h3 className="text-2xl font-semibold text-[#82CEC7]">
+                          {event.title}
+                        </h3>
+
+                        {event.description && (
+                          <p className="text-gray-600 text-sm leading-relaxed">
+                            {event.description}
+                          </p>
+                        )}
+
+                        <div className="inline-block bg-[#82CEC7]/10 text-[#82CEC7] px-4 py-2 text-sm font-medium">
+                          {new Date(event.date).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
+
+              {/* LEFT BUTTON */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#82CEC7] text-white p-3 shadow-md hover:scale-110 transition"
+              >
+                ←
+              </button>
+
+              {/* RIGHT BUTTON */}
+              <button
+                onClick={nextSlide}
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#82CEC7] text-white p-3 shadow-md hover:scale-110 transition"
+              >
+                →
+              </button>
+
             </div>
-          </div> */}
+        )}
+          </div>
+        </section>
+      )}
 
-        {/* </div> */}
-      </section>
-
-      {/* LOCATION */}
-      <section className="py-20 px-6 text-gray-600 bg-gray-50 text-center">
-        <h2 className="text-3xl font-semibold mb-7">
+      {/* LOCATION SECTION */}
+      <section className="py-20 px-6 bg-gray-50 text-center">
+        <h2 className="text-3xl font-semibold mb-12 text-[#82CEC7]">
           Find Us Here
         </h2>
 
-        <div className="mx-auto overflow-hidden">
-          <iframe
-            title="Rossgrove Bible Chapel Location"
-            src="https://www.google.com/maps?q=12+Rossgrove+Terrace,+Mt+Albert,+Auckland&output=embed"
-            width="100%"
-            height="450"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
-
-        <div className="mt-6">
-          <a
-            href="https://maps.app.goo.gl/vzvTWDE5pTWKqu5r5"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-[#82CEC7] hover:bg-[#82CEC7]/80 px-6 py-3 rounded-md font-medium transition"
-          >
-            Open in Google Maps
-          </a>
-        </div>
+        <iframe
+          title="Rossgrove Bible Chapel Location"
+          src="https://www.google.com/maps?q=12+Rossgrove+Terrace,+Mt+Albert,+Auckland&output=embed"
+          width="100%"
+          height="450"
+          style={{ border: 0 }}
+          loading="lazy"
+        />
       </section>
 
-      {/* MODAL 360 VIEWER */}
-      {/* {open && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="relative w-[95%] md:w-[80%] h-[80vh] bg-black rounded-lg overflow-hidden">
+      {/* EVENT MODAL */}
+      {selectedEvent && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white max-w-lg w-full p-8 space-y-4 relative shadow-2xl">
 
             <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 text-white hover:text-[#E94B26] px-4 py-2 rounded-md z-10"
+              onClick={() => setSelectedEvent(null)}
+              className="absolute top-4 right-4 text-[#82CEC7] hover:text-red-500 transitionfont-bold"
             >
-              [ x ]
+              ✕
             </button>
 
-            <div ref={containerRef} className="w-full h-full" />
+            {selectedEvent.image && (
+              <img
+                src={selectedEvent.image}
+                alt={selectedEvent.title}
+                className="w-full h-57 object-cover"
+              />
+            )}
+
+            <h3 className="text-2xl font-semibold text-[#82CEC7]">
+              {selectedEvent.title}
+            </h3>
+
+            <p className="text-gray-600">
+              {selectedEvent.description}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              {new Date(selectedEvent.date).toLocaleString()}
+            </p>
+
+            <a
+              href={googleCalendarLink(selectedEvent)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#82CEC7] text-white px-6 py-3 hover:bg-[#82CEC7]/80 transition"
+            >
+              Add to Google Calendar
+            </a>
 
           </div>
         </div>
-      )} */}
+      )}
 
     </div>
   );
