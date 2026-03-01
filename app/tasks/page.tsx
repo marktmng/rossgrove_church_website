@@ -1,9 +1,14 @@
 import TaskBoard from "@/components/TaskBoard";
+import { authOptions } from "@/lib/auth-options";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function TasksPage() {
-  return (
-    <div className="min-h-screen bg-[#82CEC7] p-10">
-      <TaskBoard />
-    </div>
-  );
+export default async function TasksPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  return <TaskBoard />;
 }

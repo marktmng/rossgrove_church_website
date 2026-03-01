@@ -1,9 +1,14 @@
 import EventBoard from "@/components/EventBoard";
+import { authOptions } from "@/lib/auth-options";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function EventsPage() {
-  return (
-    <div className="min-h-screen bg-[#82CEC7] p-10">
-      <EventBoard />
-    </div>
-  );
+export default async function EventsPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  return <EventBoard />;
 }
